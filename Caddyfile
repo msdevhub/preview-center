@@ -1,0 +1,41 @@
+
+pdf.dr.restry.cn {
+    encode gzip
+    tls michael.keepgoing@gmail.com 
+
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-XSS-Protection "1; mode=block"
+        X-Content-Type-Options "nosniff"
+    }
+
+    handle /api* {
+        reverse_proxy http://localhost:3000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Original-URI {uri}
+        }
+    }
+
+    # 处理根路径请求
+    handle {
+        root * /srv/pdfpreview
+        try_files {path} {path}/ /index.html
+        file_server
+        header Cache-Control "public, max-age=0, s-maxage=0, must-revalidate"
+    }
+
+    # 处理 /assets/ 路径
+    handle /assets/* {
+        root * /srv/pdfpreview
+        file_server
+        header Cache-Control "public, max-age=31536000, s-maxage=31536000, immutable"
+    }
+
+    # 处理 /workbox- 路径
+    handle /workbox-* {
+        root * /srv/pdfpreview
+        file_server
+        header Cache-Control "public, max-age=31536000, s-maxage=31536000, immutable"
+    }
+}

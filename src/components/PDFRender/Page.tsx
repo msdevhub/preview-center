@@ -1,10 +1,10 @@
-import { styled } from "@mui/styles";
+import styled from '@emotion/styled';
 import { useLayoutEffect, useRef } from "react";
 
-const Image = styled('img')({
-  marginBottom: 20,
-  width: '100%'
-})
+const Image = styled.img`
+  margin-bottom: 20px;
+  width: 100%;
+`
 
 export const Page = (props: { src: string, io: any, index: number }) => {
   const { io, src, index } = props

@@ -1,4 +1,4 @@
-import { styled } from '@mui/styles'
+import styled from '@emotion/styled';
 
 interface Props {
   fileUrl: string

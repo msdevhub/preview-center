@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@mui/styles';
+import styled from '@emotion/styled';
 
 interface ErrorToastProps {
   error: Error;
