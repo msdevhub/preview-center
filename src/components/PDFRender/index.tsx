@@ -37,6 +37,8 @@ const Sidebar = styled.div`
 const Preview = styled.div`
   width: 58vw;
   padding-left: 130px;
+  overflow-y: auto;
+  height: calc(100vh - 50px);
 
   @media (max-width: 600px) {
     width: 100vw;
