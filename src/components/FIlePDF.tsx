@@ -22,7 +22,7 @@ const FilePDF = ({ fileUrl }: Props) => {
     <Container>
       <StyledIframe
         title="预览文档"
-        src={`/pdfviewer/web/viewer.html?file=${encodeURIComponent(fileUrl)}`}
+        src={`/pdfjs-legacy/web/viewer.html?file=${encodeURIComponent(fileUrl)}`}
       />
     </Container>
   )
