@@ -103,7 +103,10 @@ type ImageType = 'png' | 'jpg' | 'jpeg' | 'gif' | 'webp' | 'svg';
 type FileType = 'pdf' | ImageType;
 type RenderMethod = 'PDFRender' | 'FilePDF' | 'ReactPDF' | 'PDFViewer' | 'Image';
 
-const defaultPdfFilePath = 'https://s28.q4cdn.com/392171258/files/doc_downloads/test.pdf';
+const defaultPdfFilePath = 'https://www.swccd.edu/student-support/disability-support-services-dss/_files/dss_sign_pdf.pdf';
+
+const CLICK_THRESHOLD = 10;
+const TIME_WINDOW = 10000; // 10 seconds in milliseconds
 
 export const App = () => {
   const [currentFileUrl, setCurrentFileUrl] = useState('');
@@ -140,8 +143,12 @@ export const App = () => {
     if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(typeParam || '')) {
       return 'Image';
     }
-    return 'ReactPDF';
+    return 'PDFRender';
   });
+
+  const [showInput, setShowInput] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const [lastClickTime, setLastClickTime] = useState(Date.now());
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFileUrl(event.target.value);
@@ -175,6 +182,25 @@ export const App = () => {
     }
   };
 
+  const handleContainerClick = () => {
+    const currentTime = Date.now();
+    
+    if (currentTime - lastClickTime > 10000) {
+      // 如果距离上次点击超过10秒，重置计数
+      setClickCount(1);
+    } else {
+      // 增加点击计数
+      setClickCount(prev => prev + 1);
+    }
+    
+    setLastClickTime(currentTime);
+    
+    // 检查是否达到显示条件
+    if (clickCount + 1 >= 10) {
+      setShowInput(true);
+    }
+  };
+
   useEffect(() => {
     const meta = document.createElement('meta');
     meta.name = 'viewport';
@@ -188,20 +214,22 @@ export const App = () => {
 
   return (
     <ErrorBoundary>
-      <Container>
-        <InputContainer>
-          <Input type="text" value={fileUrl} onChange={handleUrlChange} placeholder="输入文件地址" />
-          <ActionContainer>
-            <Toggle value={renderMethod} onChange={handleRenderMethodChange}>
-              <option value="Image">图片</option>
-              <option value="PDFRender">PDFRender</option>
-              <option value="FilePDF">FilePDF</option>
-              <option value="ReactPDF">ReactPDF</option>
-              <option value="PDFViewer">PDFViewer</option>
-            </Toggle>
-            <Button onClick={handleViewFile}>查看</Button>
-          </ActionContainer>
-        </InputContainer>
+      <Container onClick={handleContainerClick}>
+        {showInput && (
+          <InputContainer>
+            <Input type="text" value={fileUrl} onChange={handleUrlChange} placeholder="输入文件地址" />
+            <ActionContainer>
+              <Toggle value={renderMethod} onChange={handleRenderMethodChange}>
+                <option value="Image">图片</option>
+                <option value="PDFRender">PDFRender</option>
+                <option value="FilePDF">FilePDF</option>
+                <option value="ReactPDF">ReactPDF</option>
+                <option value="PDFViewer">PDFViewer</option>
+              </Toggle>
+              <Button onClick={handleViewFile}>查看</Button>
+            </ActionContainer>
+          </InputContainer>
+        )}
         <PDFContainer>
           {renderContent()}
         </PDFContainer>
