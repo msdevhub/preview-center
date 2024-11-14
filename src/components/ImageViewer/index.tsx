@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import {
-  TransformWrapper,
-  TransformComponent,
-  ReactZoomPanPinchRef,
-} from 'react-zoom-pan-pinch';
+import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 
 interface Props {
   src: string;
@@ -49,7 +45,7 @@ const ControlButton = styled.button`
   justify-content: center;
   cursor: pointer;
   font-size: 18px;
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.1);
   }
@@ -68,8 +64,14 @@ export const ImageViewer: React.FC<Props> = ({ src }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const handleImageLoad = () => {
-    setIsLoading(false);
+  const handleImageLoad = (resetTransform: () => void) => {
+    setIsLoading(prev => {
+      setTimeout(() => {
+        resetTransform();
+      }, 50);
+
+      return false;
+    });
     setError(false);
   };
 
@@ -84,22 +86,18 @@ export const ImageViewer: React.FC<Props> = ({ src }) => {
 
   return (
     <Container>
-      <TransformWrapper
-        initialScale={1}
-        minScale={0.5}
-        maxScale={4}
-        centerOnInit
-        wheel={{ wheelDisabled: true }}
-      >
+      <TransformWrapper initialScale={1} minScale={0.5} maxScale={4} centerOnInit wheel={{ wheelDisabled: true }}>
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
-            <TransformComponent wrapperStyle={{ height: '100%' }}>
+            <TransformComponent wrapperStyle={{ height: '100%', width: '100%' }}>
               {isLoading && <LoadingContainer>加载中...</LoadingContainer>}
               <Image
                 src={src}
                 alt="预览图片"
-                onLoad={handleImageLoad}
-                onError={handleImageError}
+                onLoad={() => {
+                  handleImageLoad(resetTransform);
+                }}
+                onError={() => handleImageError()}
                 style={{ display: isLoading ? 'none' : 'block' }}
               />
             </TransformComponent>
@@ -107,8 +105,13 @@ export const ImageViewer: React.FC<Props> = ({ src }) => {
               <ControlButton onClick={() => zoomOut()}>-</ControlButton>
               <ControlButton onClick={() => resetTransform()}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M4 4v7h7M20 20v-7h-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M20.49 9A9 9 0 0 0 5.64 5.64M18.36 18.36A9 9 0 0 1 3.51 15" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M4 4v7h7M20 20v-7h-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path
+                    d="M20.49 9A9 9 0 0 0 5.64 5.64M18.36 18.36A9 9 0 0 1 3.51 15"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </ControlButton>
               <ControlButton onClick={() => zoomIn()}>+</ControlButton>
@@ -118,4 +121,4 @@ export const ImageViewer: React.FC<Props> = ({ src }) => {
       </TransformWrapper>
     </Container>
   );
-}; 
+};
