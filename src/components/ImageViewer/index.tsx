@@ -11,13 +11,18 @@ const Container = styled.div`
   height: 100%;
   position: relative;
   background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Image = styled.img`
   max-width: 100%;
   max-height: 100%;
   display: block;
-  margin: auto;
+  object-fit: contain;
+  width: auto;
+  height: auto;
 `;
 
 const Controls = styled.div`
@@ -52,12 +57,16 @@ const ControlButton = styled.button`
 `;
 
 const LoadingContainer = styled.div`
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #666;
+  background: #f5f5f5;
 `;
 
 export const ImageViewer: React.FC<Props> = ({ src }) => {
@@ -89,7 +98,22 @@ export const ImageViewer: React.FC<Props> = ({ src }) => {
       <TransformWrapper initialScale={1} minScale={0.5} maxScale={4} centerOnInit wheel={{ wheelDisabled: true }}>
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
-            <TransformComponent wrapperStyle={{ height: '100%', width: '100%' }}>
+            <TransformComponent 
+              wrapperStyle={{ 
+                height: '100%', 
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              contentStyle={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                width: '100%'
+              }}
+            >
               {isLoading && <LoadingContainer>加载中...</LoadingContainer>}
               <Image
                 src={src}
@@ -98,7 +122,10 @@ export const ImageViewer: React.FC<Props> = ({ src }) => {
                   handleImageLoad(resetTransform);
                 }}
                 onError={() => handleImageError()}
-                style={{ display: isLoading ? 'none' : 'block' }}
+                style={{ 
+                  display: isLoading ? 'none' : 'block',
+                  margin: 'auto'
+                }}
               />
             </TransformComponent>
             <Controls>
