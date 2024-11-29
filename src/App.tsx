@@ -211,6 +211,9 @@ export const App = () => {
 
     const viewers = {
       PDFRender: <PDFRender src={currentFileUrl} />,
+      FilePDF: <FilePDF fileUrl={currentFileUrl} />,
+      ReactPDF: <ReactPDF fileUrl={currentFileUrl} />,
+      PDFViewer: <PDFViewer fileUrl={currentFileUrl} />,
       Image: <ImageViewer src={currentFileUrl} />
     };
 
@@ -232,6 +235,9 @@ export const App = () => {
               <ViewerSelect value={viewerType} onChange={handleViewerChange}>
                 <option value="Image">图片</option>
                 <option value="PDFRender">PDFRender</option>
+                <option value="FilePDF">FilePDF</option>
+                <option value="ReactPDF">ReactPDF</option>
+                <option value="PDFViewer">PDFViewer</option>
               </ViewerSelect>
               <Button onClick={handleViewFile}>查看</Button>
             </ActionContainer>
