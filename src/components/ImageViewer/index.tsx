@@ -65,6 +65,7 @@ const LoadingContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
   color: #666;
   background: #f5f5f5;
 `;

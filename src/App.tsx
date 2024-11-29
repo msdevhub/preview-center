@@ -35,7 +35,7 @@ const InputContainer = styled.div`
   flex-wrap: wrap;
   gap: 4px;
   margin: 4px 0;
-  
+  z-index: 100;
   @media (max-width: 768px) {
     flex-direction: column;
   }
@@ -179,13 +179,19 @@ export const App = () => {
     
     setClicks(prevClicks => {
       const recentClicks = [
-        ...prevClicks.filter(click => currentTime - click.timestamp < CLICK_TIME_WINDOW),
+        ...prevClicks.filter(click => 
+          currentTime - click.timestamp < CLICK_TIME_WINDOW
+        ),
         { timestamp: currentTime }
       ];
 
+      console.log('Click count:', recentClicks.length);
+
       if (recentClicks.length >= CLICK_THRESHOLD) {
-        setInputVisible(true);
-        return [];
+        setTimeout(() => {
+          setInputVisible(true);
+          setClicks([]);
+        }, 0);
       }
 
       return recentClicks;
@@ -234,7 +240,9 @@ export const App = () => {
         <ViewerContainer>
           {renderViewer()}
         </ViewerContainer>
-        <ClickArea onClick={handleAreaClick} />
+        <ClickArea 
+          onClick={handleAreaClick}  
+        />
       </Container>
     </ErrorBoundary>
   );
