@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { usePDFData } from "./usePdf";
 import { Page } from "./Page";
 import { keyframes } from '@emotion/react';
+import { IoInformationCircle } from "react-icons/io5";
 
 const Box = styled.div`
   display: flex;
@@ -124,8 +125,27 @@ const Spinner = styled.div`
   margin-bottom: 20px;
 `;
 
+const ErrorContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(46, 46, 46, 0.8);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+`;
+
 export const PDFRender: React.FC<{ src: string }> = (props) => {
-  const { loading, urls, previewUrls } = usePDFData({
+  const { loading, error, urls, previewUrls } = usePDFData({
     src: props.src
   })
   const [currentPage, setCurrentPage] = useState(0)
@@ -155,6 +175,16 @@ export const PDFRender: React.FC<{ src: string }> = (props) => {
       </LoadingContainer>
     )
   }
+
+  if (error) {
+    return (
+      <ErrorContainer>
+        <IoInformationCircle size={24} />
+        <div>{error}</div>
+      </ErrorContainer>
+    )
+  }
+
   return (
     <Box>
       <MenuButton onClick={toggleSidebar}>
