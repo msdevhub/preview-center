@@ -113,6 +113,10 @@ const ClickArea = styled.div`
   z-index: 1000;
 `;
 
+// 在文件顶部添加检测iOS设备的函数
+const isIOS = () => {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+};
 
 export const App = () => {
   // 状态管理
@@ -200,11 +204,22 @@ export const App = () => {
 
   // 渲染内容
   const renderViewer = () => {
+    // 如果是PDF文件且在iOS设备上
+    if (fileType === 'pdf' && isIOS()) {
+      return (
+        <UnsupportedTypeMessage>
+          <IoInformationCircle size={24} />
+          <div>苹果手机暂不支持此类型</div>
+          <div>请到PC端查看，预计25年1月份升级后支持</div>
+        </UnsupportedTypeMessage>
+      );
+    }
+
     if (fileType === 'unsupported') {
       return (
         <UnsupportedTypeMessage>
           <IoInformationCircle size={24} />
-          暂不支持此类型的内容
+          暂不支持此类型的内容，请到PC端查看
         </UnsupportedTypeMessage>
       );
     }
