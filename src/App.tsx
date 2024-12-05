@@ -115,6 +115,8 @@ const ClickArea = styled.div`
 
 // 在文件顶部添加检测iOS设备的函数
 const isIOS = () => {
+  // eslint-disable-next-line
+  // @ts-ignore
   return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 };
 
