@@ -17,7 +17,13 @@ export const usePDFData = (options: { src: string, scale?: number }) => {
     
     ;(async () => {
       try {
-        const pdfDocument = await pdf.getDocument(options.src).promise
+        const response = await fetch(options.src)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const arrayBuffer = await response.arrayBuffer()
+        
+        const pdfDocument = await pdf.getDocument(arrayBuffer).promise
         const task = new Array(pdfDocument.numPages).fill(null)
         await Promise.all(task.map(async (_, i) => {
           const page = await pdfDocument.getPage(i + 1)
